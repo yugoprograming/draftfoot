@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Premier Draft</title>
 
@@ -16,145 +16,241 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #07152b, #102f63);
+      background:
+        linear-gradient(135deg, #061b14, #0b3d2e);
       color: white;
       min-height: 100vh;
     }
 
     .container {
-      width: 100%;
-      max-width: 520px;
-      margin: auto;
-      padding: 30px 18px 50px;
+      width: min(900px, 92%);
+      margin: 0 auto;
+      padding: 30px 0 60px;
     }
 
-    .logo {
-      text-align: center;
-      font-weight: 900;
-      font-size: 34px;
-      letter-spacing: -1px;
-      margin-top: 20px;
+    .screen {
+      display: none;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #b8c7dd;
-      margin-top: 5px;
-      margin-bottom: 30px;
+    .screen.active {
+      display: block;
     }
 
     .card {
-      background: rgba(255,255,255,0.97);
-      color: #111;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
       padding: 24px;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      margin-top: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 42px;
+      margin: 20px 0 5px;
     }
 
     h2 {
       margin-top: 0;
     }
 
+    .subtitle {
+      text-align: center;
+      opacity: 0.8;
+      margin-bottom: 35px;
+    }
+
     input,
     select,
     button {
       width: 100%;
-      height: 50px;
+      padding: 14px;
       border-radius: 10px;
+      border: none;
       font-size: 16px;
+      margin-top: 10px;
     }
 
-    input,
-    select {
-      border: 1px solid #ccc;
-      padding: 0 14px;
-      margin-bottom: 12px;
+    input {
+      background: white;
+      color: #111;
     }
 
     button {
-      border: none;
-      background: #d71920;
+      background: #20c77a;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 8px;
     }
 
     button:hover {
       opacity: 0.9;
     }
 
-    .secondary {
-      background: #152d52;
+    button.secondary {
+      background: rgba(255,255,255,0.15);
     }
 
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 20px 0;
-      color: #888;
+    button.danger {
+      background: #d64545;
     }
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      height: 1px;
-      background: #ddd;
-      flex: 1;
-    }
-
-    .room-code {
-      font-size: 34px;
-      font-weight: 900;
-      letter-spacing: 5px;
-      text-align: center;
-      color: #d71920;
-      margin: 15px 0;
-    }
-
-    .status {
-      text-align: center;
-      padding: 12px;
-      border-radius: 10px;
-      background: #eef3f8;
-      color: #333;
-      margin-top: 15px;
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .hidden {
-      display: none;
+      display: none !important;
+    }
+
+    .room-code {
+      font-size: 42px;
+      font-weight: bold;
+      letter-spacing: 8px;
+      text-align: center;
+      margin: 20px 0;
     }
 
     .players {
+      display: grid;
+      gap: 10px;
       margin-top: 15px;
     }
 
-    .player {
+    .player-row {
       display: flex;
       justify-content: space-between;
-      padding: 12px;
-      border-bottom: 1px solid #eee;
+      align-items: center;
+      padding: 13px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
     }
 
-    .player:last-child {
-      border-bottom: none;
+    .badge {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .badge.locked {
+      background: #20c77a;
+    }
+
+    .draft-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .round {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+
+    .turn {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .pick-box {
+      margin-top: 20px;
+    }
+
+    .lock-button {
+      margin-top: 12px;
+      font-size: 18px;
+    }
+
+    .hidden-pick {
+      color: #aaa;
+      font-style: italic;
+    }
+
+    .history-item {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .result-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 15px;
+      margin-top: 12px;
+    }
+
+    .spinner {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      margin: 25px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        conic-gradient(
+          #20c77a 0deg 60deg,
+          #174d3c 60deg 120deg,
+          #20c77a 120deg 180deg,
+          #174d3c 180deg 240deg,
+          #20c77a 240deg 300deg,
+          #174d3c 300deg 360deg
+        );
+      border: 8px solid white;
+      animation: spin 1.2s linear infinite;
+    }
+
+    .spinner-center {
+      width: 90px;
+      height: 90px;
+      background: #082319;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(720deg);
+      }
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      min-height: 24px;
+    }
+
+    .error {
+      color: #ff8d8d;
+    }
+
+    .success {
+      color: #65e8a8;
     }
 
     .small {
       font-size: 13px;
-      color: #777;
+      opacity: 0.7;
     }
 
-    .error {
-      background: #ffe5e5;
-      color: #a00000;
-    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 32px;
+      }
 
-    .success {
-      background: #e4f8e8;
-      color: #126b2d;
+      .room-code {
+        font-size: 32px;
+      }
     }
   </style>
 </head>
@@ -163,21 +259,19 @@
 
 <div class="container">
 
-  <div class="logo">PREMIER DRAFT</div>
-  <div class="subtitle">Premier League Player Draft</div>
-
   <!-- HOME -->
-  <div id="homeScreen">
+  <section id="homeScreen" class="screen active">
+
+    <h1>PREMIER DRAFT</h1>
+    <div class="subtitle">
+      Premier League Player Draft
+    </div>
 
     <div class="card">
-      <h2>🎩 Create Draft</h2>
 
-      <input
-        id="hostName"
-        type="text"
-        placeholder="Your name"
-        maxlength="20"
-      >
+      <h2>Create Draft</h2>
+
+      <label>Players</label>
 
       <select id="playerCount">
         <option value="2">2 Players</option>
@@ -191,91 +285,202 @@
         <option value="10">10 Players</option>
       </select>
 
+      <input
+        id="createName"
+        placeholder="Your name"
+        maxlength="30"
+      />
+
       <button onclick="createRoom()">
         CREATE DRAFT
       </button>
+
     </div>
 
-    <div class="divider">OR</div>
-
     <div class="card">
-      <h2>🚪 Join Draft</h2>
+
+      <h2>Join Draft</h2>
+
+      <input
+        id="joinCode"
+        placeholder="Room code"
+        maxlength="8"
+      />
 
       <input
         id="joinName"
-        type="text"
         placeholder="Your name"
-        maxlength="20"
-      >
+        maxlength="30"
+      />
 
-      <input
-        id="roomCodeInput"
-        type="text"
-        placeholder="Room code"
-        maxlength="6"
-        style="text-transform:uppercase;"
-      >
-
-      <button class="secondary" onclick="joinRoom()">
-        JOIN DRAFT
+      <button onclick="joinRoom()">
+        JOIN ROOM
       </button>
+
     </div>
 
-    <div id="homeMessage"></div>
+    <div id="homeMessage" class="message"></div>
 
-  </div>
+  </section>
 
 
   <!-- LOBBY -->
-  <div id="lobbyScreen" class="hidden">
+  <section id="lobbyScreen" class="screen">
 
-    <div class="card">
-
-      <h2>Draft Lobby</h2>
-
-      <div class="small">ROOM CODE</div>
-
-      <div id="roomCodeDisplay" class="room-code">
-        ------
-      </div>
-
-      <div id="roomStatus" class="status">
-        Waiting for players...
-      </div>
-
-      <div class="players" id="playersList"></div>
-
-      <button id="startButton" onclick="startDraft()" class="hidden">
-        START DRAFT
-      </button>
-
-      <button class="secondary" onclick="copyRoomCode()">
-        COPY ROOM CODE
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- DRAFT -->
-  <div id="draftScreen" class="hidden">
+    <h1>PREMIER DRAFT</h1>
 
     <div class="card">
 
       <h2>Draft Room</h2>
 
-      <div id="draftInfo" class="status"></div>
+      <div class="room-code" id="roomCodeDisplay">
+        ----
+      </div>
+
+      <button
+        class="secondary"
+        onclick="copyRoomCode()"
+      >
+        COPY ROOM CODE
+      </button>
+
+      <div id="playersList" class="players"></div>
+
+      <button
+        id="startButton"
+        onclick="startDraft()"
+        class="hidden"
+      >
+        START DRAFT
+      </button>
+
+      <button
+        class="secondary"
+        onclick="leaveRoom()"
+      >
+        LEAVE ROOM
+      </button>
+
+    </div>
+
+    <div id="lobbyMessage" class="message"></div>
+
+  </section>
+
+
+  <!-- DRAFT -->
+  <section id="draftScreen" class="screen">
+
+    <div class="draft-header">
+
+      <h1>PREMIER DRAFT</h1>
+
+      <div class="round" id="roundText">
+        Round 1
+      </div>
+
+      <div class="turn" id="turnText">
+        Draft
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Your Pick</h2>
+
+      <div class="pick-box">
+
+        <input
+          id="playerInput"
+          placeholder="Enter Premier League player name"
+          maxlength="60"
+        />
+
+        <button
+          id="lockButton"
+          class="lock-button"
+          onclick="lockPick()"
+        >
+          LOCK PICK
+        </button>
+
+      </div>
+
+      <div id="pickMessage" class="message"></div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Players</h2>
 
       <div id="draftPlayers" class="players"></div>
 
     </div>
 
-  </div>
+    <div class="card">
+
+      <h2>Draft History</h2>
+
+      <div id="history"></div>
+
+    </div>
+
+  </section>
 
 
-  <!-- MESSAGE -->
-  <div id="message"></div>
+  <!-- REVEAL -->
+  <section id="revealScreen" class="screen">
+
+    <h1>REVEAL</h1>
+
+    <div class="card">
+
+      <div id="revealText" class="message">
+        Everyone locked their pick!
+      </div>
+
+      <div
+        id="spinnerArea"
+        class="hidden"
+      >
+        <div class="spinner">
+          <div
+            id="spinnerCenter"
+            class="spinner-center"
+          >
+            SPIN
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="revealResult"
+        class="message"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- RESULTS -->
+  <section id="resultsScreen" class="screen">
+
+    <h1>FINAL RESULTS</h1>
+
+    <div class="card">
+
+      <div id="finalResults"></div>
+
+      <button onclick="playAgain()">
+        PLAY AGAIN
+      </button>
+
+    </div>
+
+  </section>
 
 </div>
 
@@ -283,100 +488,180 @@
 <script>
 
   /*
-    ============================
-    SUPABASE SETTINGS
-    ============================
+  =========================================
+  SUPABASE
+  =========================================
   */
 
-  const SUPABASE_URL = "https://bxrxrfcntuargpnfodel.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_c5y87pnYPQfLNLy76WE7gw_4QQodxin";
+  const SUPABASE_URL = "YOUR_SUPABASE_URL";
+  const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
   /*
-    ============================
-    GLOBAL STATE
-    ============================
+  =========================================
+  GLOBAL STATE
+  =========================================
   */
 
   let currentRoom = null;
   let currentParticipant = null;
-  let realtimeChannel = null;
+
+  let syncTimer = null;
+
+  let processingReveal = false;
+
+  let lastRevealKey = "";
+
+  /*
+    browser-specific ID
+    This lets us identify the participant
+    on this browser.
+  */
+
+  let browserId =
+    localStorage.getItem("premierDraftBrowserId");
+
+  if (!browserId) {
+
+    browserId =
+      crypto.randomUUID();
+
+    localStorage.setItem(
+      "premierDraftBrowserId",
+      browserId
+    );
+  }
 
 
   /*
-    ============================
-    HELPERS
-    ============================
+  =========================================
+  HELPERS
+  =========================================
   */
 
-  function showMessage(text, type = "") {
+  function showScreen(id) {
 
-    const box = document.getElementById("message");
+    document
+      .querySelectorAll(".screen")
+      .forEach(screen => {
+        screen.classList.remove("active");
+      });
 
-    box.className = "status " + type;
-    box.textContent = text;
-
-    setTimeout(() => {
-      box.textContent = "";
-      box.className = "";
-    }, 4000);
+    document
+      .getElementById(id)
+      .classList.add("active");
   }
 
 
-  function showHomeMessage(text, type = "") {
+  function message(id, text, type = "") {
 
-    const box = document.getElementById("homeMessage");
+    const el =
+      document.getElementById(id);
 
-    box.className = "status " + type;
-    box.textContent = text;
+    el.textContent = text;
+
+    el.className =
+      "message " + type;
   }
 
 
-  function generateRoomCode() {
+  function normalizeName(name) {
 
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    return name
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
+
+
+  function randomCode() {
+
+    const chars =
+      "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
     let code = "";
 
     for (let i = 0; i < 6; i++) {
-      code += chars[Math.floor(Math.random() * chars.length)];
+
+      code +=
+        chars[
+          Math.floor(
+            Math.random() * chars.length
+          )
+        ];
     }
 
     return code;
   }
 
 
+  function snakeOrder(players, round) {
+
+    const sorted =
+      [...players]
+        .sort((a,b) =>
+          Number(a.slot) - Number(b.slot)
+        );
+
+    if (round % 2 === 1) {
+
+      return sorted;
+
+    } else {
+
+      return sorted.reverse();
+
+    }
+  }
+
+
   /*
-    ============================
-    CREATE ROOM
-    ============================
+  =========================================
+  CREATE ROOM
+  =========================================
   */
 
   async function createRoom() {
 
     const name =
-      document.getElementById("hostName").value.trim();
+      document
+        .getElementById("createName")
+        .value
+        .trim();
 
     const playerCount =
-      Number(document.getElementById("playerCount").value);
+      Number(
+        document
+          .getElementById("playerCount")
+          .value
+      );
 
     if (!name) {
-      showHomeMessage("名前を入力してください", "error");
+
+      message(
+        "homeMessage",
+        "名前を入力してください。",
+        "error"
+      );
+
       return;
     }
 
-    const code = generateRoomCode();
 
-    const { data: room, error: roomError } =
+    const code = randomCode();
+
+
+    const { data: room, error } =
       await supabaseClient
         .from("rooms")
         .insert({
-          code: code,
+          code,
           player_count: playerCount,
           status: "waiting",
           current_round: 1
@@ -384,12 +669,14 @@
         .select()
         .single();
 
-    if (roomError) {
 
-      console.error(roomError);
+    if (error) {
 
-      showHomeMessage(
-        "ルーム作成に失敗しました",
+      console.error(error);
+
+      message(
+        "homeMessage",
+        error.message,
         "error"
       );
 
@@ -402,7 +689,7 @@
         .from("participants")
         .insert({
           room_code: code,
-          name: name,
+          name,
           slot: 1,
           locked: false
         })
@@ -414,8 +701,9 @@
 
       console.error(participantError);
 
-      showHomeMessage(
-        "参加者登録に失敗しました",
+      message(
+        "homeMessage",
+        participantError.message,
         "error"
       );
 
@@ -426,32 +714,41 @@
     currentRoom = room;
     currentParticipant = participant;
 
-    openLobby();
+    saveLocalRoom();
+
+    await openLobby();
+
+    startSync();
 
   }
 
 
   /*
-    ============================
-    JOIN ROOM
-    ============================
+  =========================================
+  JOIN ROOM
+  =========================================
   */
 
   async function joinRoom() {
 
-    const name =
-      document.getElementById("joinName").value.trim();
-
     const code =
-      document.getElementById("roomCodeInput")
-        .value.trim()
+      document
+        .getElementById("joinCode")
+        .value
+        .trim()
         .toUpperCase();
 
+    const name =
+      document
+        .getElementById("joinName")
+        .value
+        .trim();
 
-    if (!name || !code) {
+    if (!code || !name) {
 
-      showHomeMessage(
-        "名前とルームコードを入力してください",
+      message(
+        "homeMessage",
+        "ルームコードと名前を入力してください。",
         "error"
       );
 
@@ -459,7 +756,7 @@
     }
 
 
-    const { data: room, error: roomError } =
+    const { data: room, error } =
       await supabaseClient
         .from("rooms")
         .select("*")
@@ -467,10 +764,11 @@
         .maybeSingle();
 
 
-    if (roomError || !room) {
+    if (error || !room) {
 
-      showHomeMessage(
-        "ルームが見つかりません",
+      message(
+        "homeMessage",
+        "ルームが見つかりません。",
         "error"
       );
 
@@ -480,8 +778,9 @@
 
     if (room.status !== "waiting") {
 
-      showHomeMessage(
-        "このドラフトはすでに開始されています",
+      message(
+        "homeMessage",
+        "このドラフトはすでに開始されています。",
         "error"
       );
 
@@ -489,21 +788,21 @@
     }
 
 
-    const { data: existingPlayers } =
+    const { data: existing } =
       await supabaseClient
         .from("participants")
         .select("*")
         .eq("room_code", code);
 
 
-    const players =
-      existingPlayers || [];
+    if (
+      existing &&
+      existing.length >= room.player_count
+    ) {
 
-
-    if (players.length >= room.player_count) {
-
-      showHomeMessage(
-        "このルームは満員です",
+      message(
+        "homeMessage",
+        "このルームは満員です。",
         "error"
       );
 
@@ -511,52 +810,38 @@
     }
 
 
-    const normalizedName =
-      name.toLowerCase().replace(/\s+/g, "");
+    const usedSlots =
+      (existing || [])
+        .map(p => Number(p.slot));
 
 
-    const nameExists =
-      players.some(
-        p =>
-          p.name
-            .toLowerCase()
-            .replace(/\s+/g, "") === normalizedName
-      );
+    let slot = 1;
 
-
-    if (nameExists) {
-
-      showHomeMessage(
-        "その名前はすでに使用されています",
-        "error"
-      );
-
-      return;
+    while (usedSlots.includes(slot)) {
+      slot++;
     }
 
 
-    const slot = players.length + 1;
-
-
-    const { data: participant, error } =
+    const { data: participant, error: participantError } =
       await supabaseClient
         .from("participants")
         .insert({
           room_code: code,
-          name: name,
-          slot: slot,
+          name,
+          slot,
           locked: false
         })
         .select()
         .single();
 
 
-    if (error) {
+    if (participantError) {
 
-      console.error(error);
+      console.error(participantError);
 
-      showHomeMessage(
-        "参加できませんでした",
+      message(
+        "homeMessage",
+        participantError.message,
         "error"
       );
 
@@ -567,104 +852,152 @@
     currentRoom = room;
     currentParticipant = participant;
 
-    openLobby();
+    saveLocalRoom();
+
+    await openLobby();
+
+    startSync();
 
   }
 
 
   /*
-    ============================
-    OPEN LOBBY
-    ============================
+  =========================================
+  LOCAL STORAGE
+  =========================================
+  */
+
+  function saveLocalRoom() {
+
+    localStorage.setItem(
+      "premierDraftRoom",
+      JSON.stringify({
+        roomCode: currentRoom?.code,
+        participantId: currentParticipant?.id
+      })
+    );
+
+  }
+
+
+  /*
+  =========================================
+  OPEN LOBBY
+  =========================================
   */
 
   async function openLobby() {
 
-    document
-      .getElementById("homeScreen")
-      .classList.add("hidden");
+    showScreen("lobbyScreen");
 
     document
-      .getElementById("lobbyScreen")
-      .classList.remove("hidden");
-
-
-    document.getElementById(
-      "roomCodeDisplay"
-    ).textContent = currentRoom.code;
-
+      .getElementById("roomCodeDisplay")
+      .textContent =
+      currentRoom.code;
 
     await refreshLobby();
 
-    subscribeToRoom();
-
   }
 
-
-  /*
-    ============================
-    REFRESH LOBBY
-    ============================
-  */
 
   async function refreshLobby() {
 
     if (!currentRoom) return;
 
 
-    const { data: players } =
+    const { data: players, error } =
       await supabaseClient
         .from("participants")
         .select("*")
         .eq("room_code", currentRoom.code)
-        .order("slot", { ascending: true });
+        .order("slot");
+
+
+    if (error) {
+
+      console.error(error);
+      return;
+
+    }
 
 
     const list =
-      document.getElementById("playersList");
+      document.getElementById(
+        "playersList"
+      );
 
     list.innerHTML = "";
 
 
-    (players || []).forEach(player => {
+    players.forEach(player => {
 
-      const div = document.createElement("div");
+      const row =
+        document.createElement("div");
 
-      div.className = "player";
+      row.className =
+        "player-row";
 
-      div.innerHTML = `
-        <span>
-          ${player.slot}. ${escapeHtml(player.name)}
-        </span>
-        <span>✓</span>
-      `;
 
-      list.appendChild(div);
+      const left =
+        document.createElement("span");
+
+      left.textContent =
+        player.slot + ". " + player.name;
+
+
+      const badge =
+        document.createElement("span");
+
+      badge.className =
+        "badge";
+
+      badge.textContent =
+        player.locked
+          ? "LOCKED"
+          : "READY";
+
+
+      if (player.locked) {
+        badge.classList.add("locked");
+      }
+
+
+      row.appendChild(left);
+      row.appendChild(badge);
+
+      list.appendChild(row);
 
     });
 
 
-    const count =
-      players ? players.length : 0;
+    /*
+      slot 1 = room creator / host
+    */
 
-
-    document.getElementById(
-      "roomStatus"
-    ).textContent =
-      `${count} / ${currentRoom.player_count} players joined`;
+    const isHost =
+      Number(currentParticipant.slot) === 1;
 
 
     const startButton =
-      document.getElementById("startButton");
+      document.getElementById(
+        "startButton"
+      );
 
 
-    if (count >= currentRoom.player_count) {
+    if (
+      isHost &&
+      players.length === currentRoom.player_count
+    ) {
 
-      startButton.classList.remove("hidden");
+      startButton.classList.remove(
+        "hidden"
+      );
 
     } else {
 
-      startButton.classList.add("hidden");
+      startButton.classList.add(
+        "hidden"
+      );
 
     }
 
@@ -672,9 +1005,9 @@
 
 
   /*
-    ============================
-    START DRAFT
-    ============================
+  =========================================
+  START DRAFT
+  =========================================
   */
 
   async function startDraft() {
@@ -686,15 +1019,19 @@
         .eq("room_code", currentRoom.code);
 
 
-    if (!players ||
-        players.length !== currentRoom.player_count) {
+    if (
+      !players ||
+      players.length !== currentRoom.player_count
+    ) {
 
-      showMessage(
-        "まだ全員揃っていません",
+      message(
+        "lobbyMessage",
+        "まだ全員揃っていません。",
         "error"
       );
 
       return;
+
     }
 
 
@@ -712,93 +1049,234 @@
 
       console.error(error);
 
-      showMessage(
-        "ドラフトを開始できませんでした",
+      message(
+        "lobbyMessage",
+        error.message,
         "error"
       );
 
       return;
+
     }
 
-if (error) {
 
-  console.error(error);
-
-  showMessage(
-    "ドラフトを開始できませんでした",
-    "error"
-  );
-
-  return;
-}
-
-await openDraft();
-
-}
-    openDraft();
+    await openDraft();
 
   }
 
 
   /*
-    ============================
-    OPEN DRAFT
-    ============================
+  =========================================
+  OPEN DRAFT
+  =========================================
   */
 
   async function openDraft() {
 
-    document
-      .getElementById("lobbyScreen")
-      .classList.add("hidden");
+    showScreen("draftScreen");
 
-    document
-      .getElementById("draftScreen")
-      .classList.remove("hidden");
-
-
-    document.getElementById(
-      "draftInfo"
-    ).textContent =
-      "ドラフトが開始されました！";
-
+    processingReveal = false;
 
     await refreshDraft();
 
   }
 
 
+  /*
+  =========================================
+  REFRESH DRAFT
+  =========================================
+  */
+
   async function refreshDraft() {
 
     if (!currentRoom) return;
+
+
+    const { data: room } =
+      await supabaseClient
+        .from("rooms")
+        .select("*")
+        .eq("code", currentRoom.code)
+        .maybeSingle();
+
+
+    if (!room) return;
+
+
+    currentRoom = room;
+
+
+    if (room.status === "finished") {
+
+      await showFinalResults();
+
+      return;
+
+    }
+
+
+    if (room.status !== "drafting") {
+
+      return;
+
+    }
 
 
     const { data: players } =
       await supabaseClient
         .from("participants")
         .select("*")
-        .eq("room_code", currentRoom.code)
-        .order("slot", { ascending: true });
+        .eq("room_code", room.code)
+        .order("slot");
 
+
+    if (!players) return;
+
+
+    const round =
+      Number(room.current_round || 1);
+
+
+    document
+      .getElementById("roundText")
+      .textContent =
+      "Round " + round;
+
+
+    const order =
+      snakeOrder(players, round);
+
+
+    const position =
+      order.findIndex(
+        p =>
+          String(p.id) ===
+          String(currentParticipant.id)
+      );
+
+
+    if (position >= 0) {
+
+      document
+        .getElementById("turnText")
+        .textContent =
+        "Snake Order: " +
+        (position + 1) +
+        " / " +
+        players.length;
+
+    }
+
+
+    const me =
+      players.find(
+        p =>
+          String(p.id) ===
+          String(currentParticipant.id)
+      );
+
+
+    currentParticipant = me;
+
+
+    const lockButton =
+      document.getElementById(
+        "lockButton"
+      );
+
+
+    if (me && me.locked) {
+
+      lockButton.disabled = true;
+
+      lockButton.textContent =
+        "LOCKED";
+
+      document
+        .getElementById("playerInput")
+        .disabled = true;
+
+    } else {
+
+      lockButton.disabled = false;
+
+      lockButton.textContent =
+        "LOCK PICK";
+
+      document
+        .getElementById("playerInput")
+        .disabled = false;
+
+    }
+
+
+    renderDraftPlayers(players);
+
+    await renderHistory(round);
+
+  }
+
+
+  /*
+  =========================================
+  RENDER PLAYERS
+  =========================================
+  */
+
+  function renderDraftPlayers(players) {
 
     const list =
-      document.getElementById("draftPlayers");
+      document.getElementById(
+        "draftPlayers"
+      );
 
     list.innerHTML = "";
 
 
-    (players || []).forEach(player => {
+    players.forEach(player => {
 
-      const div = document.createElement("div");
+      const row =
+        document.createElement("div");
 
-      div.className = "player";
+      row.className =
+        "player-row";
 
-      div.innerHTML = `
-        <span>${player.slot}. ${escapeHtml(player.name)}</span>
-        <span>${player.locked ? "🔒" : "⚪"}</span>
-      `;
 
-      list.appendChild(div);
+      const left =
+        document.createElement("span");
+
+      left.textContent =
+        player.slot +
+        ". " +
+        player.name;
+
+
+      const badge =
+        document.createElement("span");
+
+      badge.className =
+        "badge";
+
+      badge.textContent =
+        player.locked
+          ? "LOCKED"
+          : "PICKING";
+
+
+      if (player.locked) {
+
+        badge.classList.add(
+          "locked"
+        );
+
+      }
+
+
+      row.appendChild(left);
+      row.appendChild(badge);
+
+      list.appendChild(row);
 
     });
 
@@ -806,112 +1284,348 @@ await openDraft();
 
 
   /*
-    ============================
-    REALTIME
-    ============================
+  =========================================
+  LOCK PICK
+  =========================================
   */
 
-  function subscribeToRoom() {
+  async function lockPick() {
 
-    if (!currentRoom) return;
-
-
-    realtimeChannel =
-      supabaseClient
-        .channel("room-" + currentRoom.code)
-
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "participants",
-            filter:
-              "room_code=eq." + currentRoom.code
-          },
-          async () => {
-
-            if (
-              !document
-                .getElementById("lobbyScreen")
-                .classList.contains("hidden")
-            ) {
-
-              await refreshLobby();
-
-            }
-
-            if (
-              !document
-                .getElementById("draftScreen")
-                .classList.contains("hidden")
-            ) {
-
-              await refreshDraft();
-
-            }
-
-          }
-        )
-
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "rooms",
-            filter:
-              "code=eq." + currentRoom.code
-          },
-          async payload => {
-
-            currentRoom = {
-              ...currentRoom,
-              ...payload.new
-            };
+    if (!currentRoom ||
+        !currentParticipant) {
+      return;
+    }
 
 
-            if (payload.new.status === "drafting") {
+    const input =
+      document.getElementById(
+        "playerInput"
+      );
 
-              openDraft();
 
-            }
+    const playerName =
+      input.value.trim();
 
-          }
-        )
 
-        .subscribe();
+    if (!playerName) {
+
+      message(
+        "pickMessage",
+        "選手名を入力してください。",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (playerName.length < 2) {
+
+      message(
+        "pickMessage",
+        "選手名をもう少し入力してください。",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const round =
+      Number(
+        currentRoom.current_round || 1
+      );
+
+
+    /*
+      Check our own existing pick.
+    */
+
+    const { data: ownPick } =
+      await supabaseClient
+        .from("picks")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .eq("participant_id", String(currentParticipant.id))
+        .eq("round", round)
+        .maybeSingle();
+
+
+    let result;
+
+
+    if (ownPick) {
+
+      result =
+        await supabaseClient
+          .from("picks")
+          .update({
+            player_name: playerName
+          })
+          .eq("id", ownPick.id);
+
+    } else {
+
+      result =
+        await supabaseClient
+          .from("picks")
+          .insert({
+            room_code: currentRoom.code,
+            player_name: playerName,
+            participant_id:
+              String(currentParticipant.id),
+            round
+          });
+
+    }
+
+
+    if (result.error) {
+
+      console.error(result.error);
+
+      message(
+        "pickMessage",
+        result.error.message,
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const { error: lockError } =
+      await supabaseClient
+        .from("participants")
+        .update({
+          locked: true
+        })
+        .eq(
+          "id",
+          currentParticipant.id
+        );
+
+
+    if (lockError) {
+
+      console.error(lockError);
+
+      message(
+        "pickMessage",
+        lockError.message,
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    message(
+      "pickMessage",
+      "LOCKED！全員のロックを待っています。",
+      "success"
+    );
+
+
+    input.disabled = true;
+
+    document
+      .getElementById("lockButton")
+      .disabled = true;
+
+    await refreshDraft();
 
   }
 
 
   /*
-    ============================
-    COPY ROOM CODE
-    ============================
+  =========================================
+  HISTORY
+  =========================================
   */
 
-  async function copyRoomCode() {
+  async function renderHistory(currentRound) {
 
-    if (!currentRoom) return;
+    const { data: picks } =
+      await supabaseClient
+        .from("picks")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .neq("player_name", "")
+        .order("round", {
+          ascending: true
+        });
 
-    try {
 
-      await navigator.clipboard.writeText(
-        currentRoom.code
+    const history =
+      document.getElementById(
+        "history"
       );
 
-      showMessage(
-        "ルームコードをコピーしました！",
-        "success"
+    history.innerHTML = "";
+
+
+    if (!picks || picks.length === 0) {
+
+      history.innerHTML =
+        '<div class="small">まだ指名はありません。</div>';
+
+      return;
+
+    }
+
+
+    const rounds = {};
+
+
+    picks.forEach(pick => {
+
+      if (!rounds[pick.round]) {
+        rounds[pick.round] = [];
+      }
+
+      rounds[pick.round].push(
+        pick
       );
 
-    } catch {
+    });
 
-      showMessage(
-        "コピーできませんでした",
-        "error"
+
+    Object.keys(rounds)
+      .sort((a,b) => Number(a)-Number(b))
+      .forEach(round => {
+
+        const title =
+          document.createElement(
+            "div"
+          );
+
+        title.className =
+          "history-item";
+
+        title.innerHTML =
+          "<strong>Round " +
+          round +
+          "</strong>";
+
+
+        rounds[round].forEach(
+          pick => {
+
+            const line =
+              document.createElement(
+                "div"
+              );
+
+            line.textContent =
+              "• " +
+              pick.player_name;
+
+            title.appendChild(line);
+
+          }
+        );
+
+
+        history.appendChild(
+          title
+        );
+
+      });
+
+  }
+
+
+  /*
+  =========================================
+  SYNC
+  =========================================
+
+  Instead of relying on Realtime,
+  check Supabase every 1.2 seconds.
+  */
+
+  function startSync() {
+
+    stopSync();
+
+
+    syncTimer =
+      setInterval(
+        syncGame,
+        1200
       );
+
+  }
+
+
+  function stopSync() {
+
+    if (syncTimer) {
+
+      clearInterval(syncTimer);
+
+      syncTimer = null;
+
+    }
+
+  }
+
+
+  async function syncGame() {
+
+    if (!currentRoom ||
+        !currentParticipant) {
+      return;
+    }
+
+
+    const { data: room } =
+      await supabaseClient
+        .from("rooms")
+        .select("*")
+        .eq("code", currentRoom.code)
+        .maybeSingle();
+
+
+    if (!room) return;
+
+
+    currentRoom = room;
+
+
+    if (room.status === "drafting") {
+
+      if (
+        document
+          .getElementById("draftScreen")
+          .classList.contains("active")
+      ) {
+
+        await refreshDraft();
+
+      } else if (
+        document
+          .getElementById("lobbyScreen")
+          .classList.contains("active")
+      ) {
+
+        await openDraft();
+
+      }
+
+      await checkEveryoneLocked();
+
+    }
+
+
+    if (room.status === "finished") {
+
+      await showFinalResults();
 
     }
 
@@ -919,19 +1633,654 @@ await openDraft();
 
 
   /*
-    ============================
-    ESCAPE HTML
-    ============================
+  =========================================
+  CHECK ALL LOCKED
+  =========================================
   */
 
-  function escapeHtml(text) {
+  async function checkEveryoneLocked() {
 
-    const div =
-      document.createElement("div");
+    if (processingReveal) return;
 
-    div.textContent = text;
 
-    return div.innerHTML;
+    const { data: players } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", currentRoom.code);
+
+
+    if (!players ||
+        players.length !== currentRoom.player_count) {
+      return;
+    }
+
+
+    const everyoneLocked =
+      players.every(
+        p => p.locked === true
+      );
+
+
+    if (!everyoneLocked) {
+      return;
+    }
+
+
+    /*
+      Only slot 1 (host) resolves the round.
+      This prevents multiple browsers from
+      resolving the same collision.
+    */
+
+    const isHost =
+      Number(currentParticipant.slot) === 1;
+
+
+    if (!isHost) {
+
+      if (
+        !document
+          .getElementById("revealScreen")
+          .classList.contains("active")
+      ) {
+
+        showScreen("revealScreen");
+
+      }
+
+      return;
+
+    }
+
+
+    await resolveRound(players);
+
+  }
+
+
+  /*
+  =========================================
+  RESOLVE ROUND
+  =========================================
+  */
+
+  async function resolveRound(players) {
+
+    if (processingReveal) return;
+
+    processingReveal = true;
+
+
+    const round =
+      Number(
+        currentRoom.current_round
+      );
+
+
+    const { data: picks } =
+      await supabaseClient
+        .from("picks")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .eq("round", round)
+        .neq("player_name", "");
+
+
+    if (!picks ||
+        picks.length !== players.length) {
+
+      processingReveal = false;
+
+      return;
+
+    }
+
+
+    showScreen("revealScreen");
+
+
+    document
+      .getElementById("revealText")
+      .textContent =
+      "全員の指名を公開します！";
+
+
+    /*
+      Group by normalized player name.
+    */
+
+    const groups = {};
+
+
+    picks.forEach(pick => {
+
+      const key =
+        normalizeName(
+          pick.player_name
+        );
+
+
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+
+
+      groups[key].push(
+        pick
+      );
+
+    });
+
+
+    let losers = [];
+
+
+    for (const key of Object.keys(groups)) {
+
+      const group =
+        groups[key];
+
+
+      if (group.length <= 1) {
+        continue;
+      }
+
+
+      /*
+        Collision.
+      */
+
+      const winner =
+        await spinForWinner(
+          group,
+          key
+        );
+
+
+      for (const pick of group) {
+
+        if (
+          String(pick.id) !==
+          String(winner.id)
+        ) {
+
+          losers.push(
+            pick
+          );
+
+        }
+
+      }
+
+    }
+
+
+    /*
+      Losers become available for
+      re-pick by clearing their pick.
+    */
+
+    for (const loser of losers) {
+
+      await supabaseClient
+        .from("picks")
+        .update({
+          player_name: ""
+        })
+        .eq("id", loser.id);
+
+
+      await supabaseClient
+        .from("participants")
+        .update({
+          locked: false
+        })
+        .eq(
+          "id",
+          loser.participant_id
+        );
+
+    }
+
+
+    if (losers.length > 0) {
+
+      document
+        .getElementById("revealResult")
+        .textContent =
+        "被った選手がありました。負けたプレイヤーは再指名です。";
+
+
+      processingReveal = false;
+
+      setTimeout(
+        async () => {
+
+          showScreen("draftScreen");
+
+          await refreshDraft();
+
+        },
+        2500
+      );
+
+      return;
+
+    }
+
+
+    /*
+      No losers = round completed.
+    */
+
+    const nextRound =
+      round + 1;
+
+
+    if (round >= 5) {
+
+      await supabaseClient
+        .from("rooms")
+        .update({
+          status: "finished"
+        })
+        .eq(
+          "code",
+          currentRoom.code
+        );
+
+
+      processingReveal = false;
+
+      await showFinalResults();
+
+      return;
+
+    }
+
+
+    /*
+      Unlock everybody for next round.
+    */
+
+    await supabaseClient
+      .from("participants")
+      .update({
+        locked: false
+      })
+      .eq(
+        "room_code",
+        currentRoom.code
+      );
+
+
+    await supabaseClient
+      .from("rooms")
+      .update({
+        current_round: nextRound
+      })
+      .eq(
+        "code",
+        currentRoom.code
+      );
+
+
+    document
+      .getElementById("revealResult")
+      .textContent =
+      "Round " +
+      round +
+      " 完了！次のラウンドへ";
+
+
+    processingReveal = false;
+
+
+    setTimeout(
+      async () => {
+
+        showScreen("draftScreen");
+
+        await refreshDraft();
+
+      },
+      1800
+    );
+
+  }
+
+
+  /*
+  =========================================
+  SPIN
+  =========================================
+
+  This is a visual spinner.
+  No money, betting, or gambling is involved.
+  */
+
+  async function spinForWinner(
+    group,
+    playerKey
+  ) {
+
+    const spinnerArea =
+      document.getElementById(
+        "spinnerArea"
+      );
+
+    const spinnerCenter =
+      document.getElementById(
+        "spinnerCenter"
+      );
+
+
+    spinnerArea.classList.remove(
+      "hidden"
+    );
+
+
+    /*
+      Deterministic result:
+      all browsers calculate the same winner.
+    */
+
+    let hash = 0;
+
+    const text =
+      currentRoom.code +
+      "-" +
+      currentRoom.current_round +
+      "-" +
+      playerKey;
+
+
+    for (let i = 0; i < text.length; i++) {
+
+      hash =
+        ((hash << 5) - hash) +
+        text.charCodeAt(i);
+
+      hash |= 0;
+
+    }
+
+
+    const winnerIndex =
+      Math.abs(hash) %
+      group.length;
+
+
+    const winner =
+      group[winnerIndex];
+
+
+    /*
+      Animation.
+    */
+
+    for (
+      let i = 0;
+      i < 18;
+      i++
+    ) {
+
+      const temp =
+        group[i % group.length];
+
+
+      spinnerCenter.textContent =
+        temp.participant_id;
+
+
+      await sleep(100);
+
+    }
+
+
+    spinnerCenter.textContent =
+      winner.participant_id;
+
+
+    document
+      .getElementById("revealResult")
+      .textContent =
+      "WINNER: " +
+      winner.participant_id;
+
+
+    await sleep(1000);
+
+
+    spinnerArea.classList.add(
+      "hidden"
+    );
+
+
+    return winner;
+
+  }
+
+
+  function sleep(ms) {
+
+    return new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          ms
+        )
+    );
+
+  }
+
+
+  /*
+  =========================================
+  FINAL RESULTS
+  =========================================
+  */
+
+  async function showFinalResults() {
+
+    stopSync();
+
+    showScreen(
+      "resultsScreen"
+    );
+
+
+    const { data: players } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .order("slot");
+
+
+    const { data: picks } =
+      await supabaseClient
+        .from("picks")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .neq("player_name", "")
+        .order("round");
+
+
+    const container =
+      document.getElementById(
+        "finalResults"
+      );
+
+    container.innerHTML = "";
+
+
+    players.forEach(player => {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+      card.className =
+        "result-card";
+
+
+      const title =
+        document.createElement(
+          "h3"
+        );
+
+      title.textContent =
+        player.name;
+
+
+      card.appendChild(title);
+
+
+      const playerPicks =
+        picks.filter(
+          p =>
+            String(
+              p.participant_id
+            ) ===
+            String(player.id)
+        );
+
+
+      if (
+        playerPicks.length === 0
+      ) {
+
+        const none =
+          document.createElement(
+            "div"
+          );
+
+        none.textContent =
+          "No picks";
+
+        card.appendChild(
+          none
+        );
+
+      } else {
+
+        playerPicks.forEach(
+          pick => {
+
+            const line =
+              document.createElement(
+                "div"
+              );
+
+            line.textContent =
+              "Round " +
+              pick.round +
+              " — " +
+              pick.player_name;
+
+            card.appendChild(
+              line
+            );
+
+          }
+        );
+
+      }
+
+
+      container.appendChild(
+        card
+      );
+
+    });
+
+  }
+
+
+  /*
+  =========================================
+  COPY CODE
+  =========================================
+  */
+
+  async function copyRoomCode() {
+
+    if (!currentRoom) return;
+
+
+    await navigator.clipboard.writeText(
+      currentRoom.code
+    );
+
+
+    message(
+      "lobbyMessage",
+      "ルームコードをコピーしました！",
+      "success"
+    );
+
+  }
+
+
+  /*
+  =========================================
+  LEAVE
+  =========================================
+  */
+
+  function leaveRoom() {
+
+    stopSync();
+
+    currentRoom = null;
+    currentParticipant = null;
+
+    localStorage.removeItem(
+      "premierDraftRoom"
+    );
+
+    showScreen(
+      "homeScreen"
+    );
+
+  }
+
+
+  /*
+  =========================================
+  PLAY AGAIN
+  =========================================
+  */
+
+  function playAgain() {
+
+    stopSync();
+
+    currentRoom = null;
+    currentParticipant = null;
+
+    localStorage.removeItem(
+      "premierDraftRoom"
+    );
+
+    document
+      .getElementById("createName")
+      .value = "";
+
+    document
+      .getElementById("joinName")
+      .value = "";
+
+    document
+      .getElementById("joinCode")
+      .value = "";
+
+    showScreen(
+      "homeScreen"
+    );
 
   }
 
