@@ -1,1 +1,1710 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREMIER DRAFT</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at top,#18376d 0,#07152f 45%,#040c1c 100%);
+  color:#fff;
+}
+
+.app{
+  width:min(94%,560px);
+  margin:auto;
+  padding:28px 0 50px;
+}
+
+.logo{
+  text-align:center;
+  font-size:40px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.logo span{
+  color:#e30613;
+}
+
+.subtitle{
+  text-align:center;
+  color:#b8c6df;
+  margin:5px 0 28px;
+}
+
+.card{
+  background:rgba(16,35,74,.94);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+h2{
+  margin:0 0 16px;
+}
+
+input,select{
+  width:100%;
+  padding:15px;
+  border-radius:11px;
+  border:1px solid #53698f;
+  background:#07152f;
+  color:#fff;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:11px;
+  padding:15px;
+  margin-top:8px;
+  background:#e30613;
+  color:white;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#29436f;
+}
+
+button:disabled{
+  opacity:.45;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.room-code{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:7px;
+  padding:10px 0 20px;
+}
+
+.player-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#172d59;
+  border-radius:11px;
+  padding:13px;
+  margin:7px 0;
+}
+
+.badge{
+  background:#243e70;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:12px;
+}
+
+.locked{
+  color:#56ff9b;
+}
+
+.waiting{
+  color:#ffcf56;
+}
+
+.status{
+  text-align:center;
+  color:#b9c6dc;
+  margin-top:12px;
+}
+
+.error{
+  color:#ff6b75;
+}
+
+.success{
+  color:#56ff9b;
+}
+
+.turn-box{
+  text-align:center;
+  background:#07152f;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:14px;
+}
+
+.round{
+  color:#b9c6dc;
+  font-size:14px;
+  margin-bottom:5px;
+}
+
+.current-turn{
+  font-size:20px;
+  font-weight:800;
+}
+
+.pick-hidden{
+  color:#8899b8;
+}
+
+.history-row{
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.result-card{
+  background:#07152f;
+  border-radius:13px;
+  padding:14px;
+  margin:9px 0;
+}
+
+.result-name{
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.pick{
+  display:inline-block;
+  background:#203866;
+  padding:6px 9px;
+  border-radius:7px;
+  margin:3px;
+  font-size:13px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(2,7,18,.94);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+}
+
+.roulette{
+  width:min(90%,420px);
+  background:#10234a;
+  border-radius:22px;
+  padding:30px 20px;
+  text-align:center;
+}
+
+.roulette-title{
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+.roulette-name{
+  font-size:30px;
+  font-weight:900;
+  min-height:42px;
+  margin:20px 0;
+}
+
+.spinner{
+  width:70px;
+  height:70px;
+  margin:15px auto;
+  border:8px solid #314b7b;
+  border-top-color:#e30613;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+.small{
+  font-size:13px;
+  color:#93a4c4;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="logo">
+    PREMIER <span>DRAFT</span>
+  </div>
+
+  <div class="subtitle">
+    Premier League Player Draft
+  </div>
+
+  <!-- HOME -->
+  <section id="home">
+
+    <div class="card">
+      <h2>CREATE DRAFT</h2>
+
+      <input id="createName" placeholder="Your name">
+
+      <select id="playerCount">
+        <option value="2">2 Players</option>
+        <option value="3">3 Players</option>
+        <option value="4">4 Players</option>
+        <option value="5">5 Players</option>
+        <option value="6">6 Players</option>
+        <option value="7">7 Players</option>
+        <option value="8">8 Players</option>
+        <option value="9">9 Players</option>
+        <option value="10">10 Players</option>
+      </select>
+
+      <button onclick="createRoom()">
+        CREATE DRAFT
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>JOIN ROOM</h2>
+
+      <input id="joinName" placeholder="Your name">
+
+      <input
+        id="joinCode"
+        placeholder="Room code"
+        maxlength="6"
+      >
+
+      <button onclick="joinRoom()">
+        JOIN ROOM
+      </button>
+    </div>
+
+    <div id="homeMessage" class="status"></div>
+
+  </section>
+
+
+  <!-- ROOM -->
+  <section id="room" class="hidden">
+
+    <div class="card">
+
+      <h2>Draft Room</h2>
+
+      <div class="room-code" id="roomCode">
+        ------
+      </div>
+
+      <div id="roomPlayers"></div>
+
+      <button
+        id="startBtn"
+        class="hidden"
+        onclick="startDraft()"
+      >
+        START DRAFT
+      </button>
+
+      <div id="roomStatus" class="status">
+        Waiting for players...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DRAFT -->
+  <section id="draft" class="hidden">
+
+    <div class="card">
+
+      <div class="round" id="roundNumber">
+        ROUND 1
+      </div>
+
+      <div class="turn-box">
+        <div class="small">
+          CURRENT PICK
+        </div>
+
+        <div
+          class="current-turn"
+          id="currentTurn"
+        >
+          -
+        </div>
+      </div>
+
+      <input
+        id="playerInput"
+        placeholder="Enter player name"
+        autocomplete="off"
+      >
+
+      <button
+        id="lockBtn"
+        onclick="lockPick()"
+      >
+        LOCK PICK
+      </button>
+
+      <div
+        id="draftStatus"
+        class="status"
+      ></div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Draft Board</h2>
+
+      <div id="draftBoard">
+        Waiting...
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Draft History</h2>
+
+      <div id="history">
+        No picks yet.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- RESULTS -->
+  <section id="resultsScreen" class="hidden">
+
+    <div class="card">
+
+      <h2>FINAL RESULTS</h2>
+
+      <div id="results"></div>
+
+      <button
+        class="secondary"
+        onclick="location.reload()"
+      >
+        PLAY AGAIN
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- ROULETTE -->
+<div
+  id="rouletteOverlay"
+  class="overlay hidden"
+>
+  <div class="roulette">
+
+    <div class="roulette-title">
+      COLLISION!
+    </div>
+
+    <div class="small">
+      Roulette deciding the winner...
+    </div>
+
+    <div class="spinner"></div>
+
+    <div
+      id="rouletteName"
+      class="roulette-name"
+    >
+      -
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+
+/* ==================================================
+   SUPABASE
+================================================== */
+
+const SUPABASE_URL =
+  "https://bxrxrfcntuargpnfodel.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_c5y87pnYPQfLNLy76WE7gw_4QQodxin";
+
+const db =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* ==================================================
+   STATE
+================================================== */
+
+let roomCode = null;
+let myParticipant = null;
+let isHost = false;
+
+let roomData = null;
+let participants = [];
+
+let currentRound = 1;
+let poll = null;
+let resolving = false;
+
+
+/* ==================================================
+   BASIC
+================================================== */
+
+function show(id){
+  document.getElementById(id)
+    .classList.remove("hidden");
+}
+
+function hide(id){
+  document.getElementById(id)
+    .classList.add("hidden");
+}
+
+function setMessage(text,type=""){
+  const el =
+    document.getElementById("homeMessage");
+
+  el.className =
+    "status " + type;
+
+  el.textContent = text;
+}
+
+function escapeHTML(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* ==================================================
+   ROOM CODE
+================================================== */
+
+function generateCode(){
+
+  return Math.random()
+    .toString(36)
+    .substring(2,8)
+    .toUpperCase();
+
+}
+
+
+/* ==================================================
+   CREATE
+================================================== */
+
+async function createRoom(){
+
+  const name =
+    document.getElementById(
+      "createName"
+    ).value.trim();
+
+  const count =
+    Number(
+      document.getElementById(
+        "playerCount"
+      ).value
+    );
+
+
+  if(!name){
+    setMessage(
+      "名前を入力してください",
+      "error"
+    );
+    return;
+  }
+
+
+  const code =
+    generateCode();
+
+
+  const {data:room,error} =
+    await db
+      .from("rooms")
+      .insert({
+        code:code,
+        player_count:count,
+        status:"waiting",
+        current_round:1
+      })
+      .select()
+      .single();
+
+
+  if(error){
+
+    console.error(error);
+
+    setMessage(
+      "部屋を作れませんでした: "
+      + error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  const {data:person,error:personError} =
+    await db
+      .from("participants")
+      .insert({
+        room_code:code,
+        name:name,
+        slot:1,
+        locked:false
+      })
+      .select()
+      .single();
+
+
+  if(personError){
+
+    setMessage(
+      personError.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  roomCode = code;
+  myParticipant = person;
+  isHost = true;
+
+  enterRoom();
+
+}
+
+
+/* ==================================================
+   JOIN
+================================================== */
+
+async function joinRoom(){
+
+  const name =
+    document.getElementById(
+      "joinName"
+    ).value.trim();
+
+  const code =
+    document.getElementById(
+      "joinCode"
+    ).value.trim().toUpperCase();
+
+
+  if(!name || !code){
+
+    setMessage(
+      "名前とルームコードを入力してください",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const {data:room,error} =
+    await db
+      .from("rooms")
+      .select("*")
+      .eq("code",code)
+      .maybeSingle();
+
+
+  if(error || !room){
+
+    setMessage(
+      "その部屋が見つかりません",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if(room.status !== "waiting"){
+
+    setMessage(
+      "このドラフトはすでに開始されています",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const {data:existing} =
+    await db
+      .from("participants")
+      .select("*")
+      .eq("room_code",code)
+      .order("slot");
+
+
+  if(
+    existing &&
+    existing.length >= room.player_count
+  ){
+
+    setMessage(
+      "この部屋は満員です",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const slot =
+    (existing?.length || 0) + 1;
+
+
+  const {data:person,error:personError} =
+    await db
+      .from("participants")
+      .insert({
+        room_code:code,
+        name:name,
+        slot:slot,
+        locked:false
+      })
+      .select()
+      .single();
+
+
+  if(personError){
+
+    setMessage(
+      personError.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  roomCode = code;
+  myParticipant = person;
+
+  enterRoom();
+
+}
+
+
+/* ==================================================
+   ENTER ROOM
+================================================== */
+
+function enterRoom(){
+
+  hide("home");
+  show("room");
+
+  document.getElementById(
+    "roomCode"
+  ).textContent = roomCode;
+
+
+  if(poll){
+    clearInterval(poll);
+  }
+
+
+  updateRoom();
+
+  poll =
+    setInterval(updateRoom,1000);
+
+}
+
+
+/* ==================================================
+   ROOM UPDATE
+================================================== */
+
+async function updateRoom(){
+
+  if(!roomCode || resolving) return;
+
+
+  const {data:room} =
+    await db
+      .from("rooms")
+      .select("*")
+      .eq("code",roomCode)
+      .maybeSingle();
+
+
+  if(!room) return;
+
+
+  roomData = room;
+
+
+  if(room.status === "drafting"){
+
+    clearInterval(poll);
+
+    currentRound =
+      room.current_round || 1;
+
+    openDraft();
+
+    return;
+  }
+
+
+  const {data:list} =
+    await db
+      .from("participants")
+      .select("*")
+      .eq("room_code",roomCode)
+      .order("slot");
+
+
+  participants =
+    list || [];
+
+
+  renderRoom();
+
+
+  if(
+    isHost &&
+    participants.length === room.player_count
+  ){
+
+    show("startBtn");
+
+    document.getElementById(
+      "roomStatus"
+    ).textContent =
+      "Everyone is ready!";
+
+  }
+
+}
+
+
+/* ==================================================
+   ROOM UI
+================================================== */
+
+function renderRoom(){
+
+  const box =
+    document.getElementById(
+      "roomPlayers"
+    );
+
+  box.innerHTML = "";
+
+
+  participants.forEach(p => {
+
+    box.innerHTML += `
+      <div class="player-row">
+        <span>
+          ${p.slot}. ${escapeHTML(p.name)}
+        </span>
+
+        <span class="badge">
+          ${p.locked ? "READY" : "WAITING"}
+        </span>
+      </div>
+    `;
+
+  });
+
+
+  document.getElementById(
+    "roomStatus"
+  ).textContent =
+    `${participants.length} / ${roomData.player_count} players`;
+
+}
+
+
+/* ==================================================
+   START
+================================================== */
+
+async function startDraft(){
+
+  if(!isHost) return;
+
+
+  const {data:list} =
+    await db
+      .from("participants")
+      .select("*")
+      .eq("room_code",roomCode);
+
+
+  if(
+    !list ||
+    list.length !== roomData.player_count
+  ){
+
+    alert(
+      "まだ全員そろっていません"
+    );
+
+    return;
+  }
+
+
+  const {error} =
+    await db
+      .from("rooms")
+      .update({
+        status:"drafting",
+        current_round:1
+      })
+      .eq("code",roomCode);
+
+
+  if(error){
+
+    alert(
+      "スタートできません: "
+      + error.message
+    );
+
+    console.error(error);
+
+    return;
+  }
+
+
+  clearInterval(poll);
+
+  openDraft();
+
+}
+
+
+/* ==================================================
+   OPEN DRAFT
+================================================== */
+
+function openDraft(){
+
+  hide("home");
+  hide("room");
+  show("draft");
+
+  loadDraft();
+
+  if(poll){
+    clearInterval(poll);
+  }
+
+  poll =
+    setInterval(loadDraft,1000);
+
+}
+
+
+/* ==================================================
+   SNAKE ORDER
+================================================== */
+
+function getPickOrder(){
+
+  const sorted =
+    [...participants]
+      .sort((a,b)=>a.slot-b.slot);
+
+
+  if(currentRound % 2 === 0){
+    sorted.reverse();
+  }
+
+
+  return sorted;
+
+}
+
+
+/* ==================================================
+   DRAFT LOAD
+================================================== */
+
+async function loadDraft(){
+
+  if(!roomCode || resolving) return;
+
+
+  const {data:room} =
+    await db
+      .from("rooms")
+      .select("*")
+      .eq("code",roomCode)
+      .maybeSingle();
+
+
+  if(!room) return;
+
+
+  roomData = room;
+
+  currentRound =
+    room.current_round || 1;
+
+
+  const {data:list} =
+    await db
+      .from("participants")
+      .select("*")
+      .eq("room_code",roomCode)
+      .order("slot");
+
+
+  participants =
+    list || [];
+
+
+  document.getElementById(
+    "roundNumber"
+  ).textContent =
+    `ROUND ${currentRound}`;
+
+
+  const order =
+    getPickOrder();
+
+
+  const current =
+    order.find(p => !p.locked);
+
+
+  document.getElementById(
+    "currentTurn"
+  ).textContent =
+    current
+      ? current.name
+      : "WAITING";
+
+
+  const my =
+    participants.find(
+      p => p.id === myParticipant.id
+    );
+
+
+  if(my){
+
+    myParticipant = my;
+
+
+    document.getElementById(
+      "lockBtn"
+    ).disabled =
+      my.locked;
+
+    document.getElementById(
+      "playerInput"
+    ).disabled =
+      my.locked;
+
+
+    document.getElementById(
+      "draftStatus"
+    ).textContent =
+      my.locked
+        ? "🔒 Locked — waiting for everyone..."
+        : "Choose a player and lock your pick.";
+
+  }
+
+
+  await renderDraftBoard();
+
+
+  if(
+    isHost &&
+    participants.length > 0 &&
+    participants.every(p=>p.locked)
+  ){
+
+    await resolveRound();
+
+  }
+
+}
+
+
+/* ==================================================
+   DRAFT BOARD
+================================================== */
+
+async function renderDraftBoard(){
+
+  const {data:picks} =
+    await db
+      .from("picks")
+      .select("*")
+      .eq("room_code",roomCode)
+      .eq("round",currentRound);
+
+
+  const allLocked =
+    participants.length > 0 &&
+    participants.every(p=>p.locked);
+
+
+  const box =
+    document.getElementById(
+      "draftBoard"
+    );
+
+  box.innerHTML = "";
+
+
+  participants.forEach(p=>{
+
+    const pick =
+      (picks || []).find(
+        x =>
+          x.participant_id === p.id &&
+          x.player_name
+      );
+
+
+    let text =
+      "🔒 Locked";
+
+
+    if(allLocked && pick){
+      text =
+        escapeHTML(pick.player_name);
+    }
+
+
+    box.innerHTML += `
+      <div class="player-row">
+        <span>
+          ${p.slot}. ${escapeHTML(p.name)}
+        </span>
+
+        <span class="badge">
+          ${text}
+        </span>
+      </div>
+    `;
+
+  });
+
+
+  await renderHistory();
+
+}
+
+
+/* ==================================================
+   LOCK PICK
+================================================== */
+
+async function lockPick(){
+
+  if(myParticipant.locked){
+    return;
+  }
+
+
+  const input =
+    document.getElementById(
+      "playerInput"
+    );
+
+
+  const player =
+    input.value.trim();
+
+
+  if(!player){
+
+    alert(
+      "選手名を入力してください"
+    );
+
+    return;
+  }
+
+
+  /*
+    同じラウンドで同じ選手を
+    選んでいる人がいるか確認。
+    ただし全員同時公開なので、
+    ここでは重複していてもOK。
+    後でルーレットを行う。
+  */
+
+
+  const {data:oldPick} =
+    await db
+      .from("picks")
+      .select("*")
+      .eq("room_code",roomCode)
+      .eq("participant_id",myParticipant.id)
+      .eq("round",currentRound)
+      .maybeSingle();
+
+
+  let error;
+
+
+  if(oldPick){
+
+    const result =
+      await db
+        .from("picks")
+        .update({
+          player_name:player
+        })
+        .eq("id",oldPick.id);
+
+    error =
+      result.error;
+
+  }else{
+
+    const result =
+      await db
+        .from("picks")
+        .insert({
+          room_code:roomCode,
+          player_name:player,
+          participant_id:myParticipant.id,
+          round:currentRound
+        });
+
+    error =
+      result.error;
+
+  }
+
+
+  if(error){
+
+    alert(
+      "選手を保存できません: "
+      + error.message
+    );
+
+    return;
+  }
+
+
+  const {error:lockError} =
+    await db
+      .from("participants")
+      .update({
+        locked:true
+      })
+      .eq("id",myParticipant.id);
+
+
+  if(lockError){
+
+    alert(
+      "ロックできません: "
+      + lockError.message
+    );
+
+    return;
+  }
+
+
+  myParticipant.locked = true;
+
+
+  input.disabled = true;
+
+  document.getElementById(
+    "lockBtn"
+  ).disabled = true;
+
+  document.getElementById(
+    "draftStatus"
+  ).textContent =
+    "🔒 Locked — waiting for everyone...";
+
+
+  await loadDraft();
+
+}
+
+
+/* ==================================================
+   RESOLVE ROUND
+================================================== */
+
+async function resolveRound(){
+
+  if(resolving) return;
+
+  resolving = true;
+
+
+  const {data:picks} =
+    await db
+      .from("picks")
+      .select("*")
+      .eq("room_code",roomCode)
+      .eq("round",currentRound);
+
+
+  if(!picks){
+    resolving = false;
+    return;
+  }
+
+
+  /*
+    参加者ごとのピック
+  */
+
+  const map = {};
+
+
+  picks
+    .filter(p=>p.player_name)
+    .forEach(p=>{
+
+      if(!map[p.player_name]){
+        map[p.player_name] = [];
+      }
+
+      map[p.player_name].push(p);
+
+    });
+
+
+  const collisions =
+    Object.entries(map)
+      .filter(([_,group])=>group.length > 1);
+
+
+  /*
+    衝突なし
+  */
+
+  if(collisions.length === 0){
+
+    await finishRound();
+
+    resolving = false;
+
+    return;
+  }
+
+
+  /*
+    衝突あり
+  */
+
+  for(const [player,group] of collisions){
+
+    /*
+      ランダムで勝者を決定。
+      同じ結果を全員に見せるため、
+      hostがDBを書き換える。
+    */
+
+    const winnerIndex =
+      Math.floor(
+        Math.random() * group.length
+      );
+
+    const winner =
+      group[winnerIndex];
+
+
+    await showRoulette(
+      player,
+      group,
+      winner
+    );
+
+
+    /*
+      losers:
+      player_nameを空にして
+      locked=falseに戻す。
+    */
+
+    for(const pick of group){
+
+      if(pick.id === winner.id){
+        continue;
+      }
+
+
+      await db
+        .from("picks")
+        .update({
+          player_name:""
+        })
+        .eq("id",pick.id);
+
+
+      await db
+        .from("participants")
+        .update({
+          locked:false
+        })
+        .eq("id",pick.participant_id);
+
+    }
+
+  }
+
+
+  resolving = false;
+
+  await loadDraft();
+
+}
+
+
+/* ==================================================
+   ROULETTE
+================================================== */
+
+async function showRoulette(
+  player,
+  group,
+  winner
+){
+
+  const overlay =
+    document.getElementById(
+      "rouletteOverlay"
+    );
+
+  const name =
+    document.getElementById(
+      "rouletteName"
+    );
+
+
+  overlay.classList.remove("hidden");
+
+
+  const names =
+    group.map(
+      p =>
+        participants.find(
+          x=>x.id===p.participant_id
+        )?.name || "Player"
+    );
+
+
+  for(let i=0;i<16;i++){
+
+    name.textContent =
+      names[i % names.length];
+
+    await sleep(100);
+
+  }
+
+
+  const winnerName =
+    participants.find(
+      p=>p.id===winner.participant_id
+    )?.name || "Winner";
+
+
+  name.textContent =
+    winnerName;
+
+
+  await sleep(1000);
+
+
+  overlay.classList.add("hidden");
+
+}
+
+
+function sleep(ms){
+
+  return new Promise(
+    resolve=>setTimeout(resolve,ms)
+  );
+
+}
+
+
+/* ==================================================
+   FINISH ROUND
+================================================== */
+
+async function finishRound(){
+
+  /*
+    全員のlockedをfalseにして、
+    次のラウンドへ。
+  */
+
+
+  const nextRound =
+    currentRound + 1;
+
+
+  /*
+    この例では各ラウンド3人分などではなく、
+    ラウンド数を参加人数に合わせる。
+    例:
+    2人 -> 5 rounds
+    3人 -> 5 rounds
+  */
+
+  const totalRounds = 5;
+
+
+  if(currentRound >= totalRounds){
+
+    await db
+      .from("rooms")
+      .update({
+        status:"finished"
+      })
+      .eq("code",roomCode);
+
+
+    showResults();
+
+    return;
+  }
+
+
+  await db
+    .from("participants")
+    .update({
+      locked:false
+    })
+    .eq("room_code",roomCode);
+
+
+  await db
+    .from("rooms")
+    .update({
+      current_round:nextRound
+    })
+    .eq("code",roomCode);
+
+
+  currentRound =
+    nextRound;
+
+
+  document.getElementById(
+    "playerInput"
+  ).value = "";
+
+}
+
+
+/* ==================================================
+   HISTORY
+================================================== */
+
+async function renderHistory(){
+
+  const {data:picks} =
+    await db
+      .from("picks")
+      .select("*")
+      .eq("room_code",roomCode)
+      .order("round")
+      .order("created_at");
+
+
+  const box =
+    document.getElementById(
+      "history"
+    );
+
+
+  if(!picks || picks.length===0){
+
+    box.textContent =
+      "No picks yet.";
+
+    return;
+  }
+
+
+  box.innerHTML = "";
+
+
+  picks
+    .filter(p=>p.player_name)
+    .forEach(p=>{
+
+      const person =
+        participants.find(
+          x=>x.id===p.participant_id
+        );
+
+
+      box.innerHTML += `
+        <div class="history-row">
+          <strong>
+            Round ${p.round}
+          </strong>
+          —
+          ${escapeHTML(person?.name || "")}
+          :
+          ${escapeHTML(p.player_name)}
+        </div>
+      `;
+
+    });
+
+}
+
+
+/* ==================================================
+   RESULTS
+================================================== */
+
+async function showResults(){
+
+  clearInterval(poll);
+
+  hide("draft");
+
+  show("resultsScreen");
+
+
+  const {data:picks} =
+    await db
+      .from("picks")
+      .select("*")
+      .eq("room_code",roomCode)
+      .order("round")
+      .order("created_at");
+
+
+  const box =
+    document.getElementById(
+      "results"
+    );
+
+
+  box.innerHTML = "";
+
+
+  participants
+    .sort((a,b)=>a.slot-b.slot)
+    .forEach(person=>{
+
+      const mine =
+        (picks || [])
+          .filter(
+            p =>
+              p.participant_id === person.id &&
+              p.player_name
+          );
+
+
+      box.innerHTML += `
+        <div class="result-card">
+
+          <div class="result-name">
+            ${person.slot}.
+            ${escapeHTML(person.name)}
+          </div>
+
+          ${
+            mine.length
+              ? mine.map(
+                  p =>
+                    `<span class="pick">
+                      R${p.round}
+                      ${escapeHTML(p.player_name)}
+                    </span>`
+                ).join("")
+              : `<span class="small">
+                   No picks
+                 </span>`
+          }
+
+        </div>
+      `;
+
+    });
+
+}
+
+
+/* ==================================================
+   INIT
+================================================== */
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+    if(poll){
+      clearInterval(poll);
+    }
+  }
+);
+
+</script>
+
+</body>
+</html>
+```
 
