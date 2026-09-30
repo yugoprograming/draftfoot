@@ -11,3 +11,93 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLAYER DRAFT</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0b0b0d;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    h1 {
+      font-size: 48px;
+      letter-spacing: 5px;
+      margin-bottom: 50px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .create {
+      background: white;
+      color: black;
+    }
+
+    .join {
+      background: #222;
+      color: white;
+      border: 1px solid #555;
+    }
+
+    #message {
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>PLAYER DRAFT</h1>
+
+    <button class="create" onclick="createRoom()">
+      ドラフト会議を開催
+    </button>
+
+    <button class="join" onclick="joinRoom()">
+      ドラフト会議に参加
+    </button>
+
+    <div id="message"></div>
+
+  </div>
+
+  <script>
+    function createRoom() {
+      document.getElementById("message").textContent =
+        "ドラフト会議を開催します！";
+    }
+
+    function joinRoom() {
+      document.getElementById("message").textContent =
+        "ドラフト会議に参加します！";
+    }
+  </script>
+
+</body>
+</html>
