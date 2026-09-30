@@ -1,16 +1,927 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Premier Player Draft</title>
-<style>
-:root{--bg:#07111f;--card:#0e1b2d;--line:#29415f;--text:#f5f7fb;--muted:#9fb0c4;--green:#3ee58f;--gold:#ffd166}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#07111f,#0b1829,#07111f);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}.wrap{width:min(900px,100%);margin:auto;padding:18px 14px 50px}.top{display:flex;justify-content:space-between;align-items:center}.logo{font-weight:900;letter-spacing:.04em}.live{font-size:11px;color:var(--green);border:1px solid #245c47;border-radius:99px;padding:5px 9px}.hero{padding:38px 0 24px}.eyebrow{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.15em}.hero h1{font-size:clamp(42px,12vw,76px);line-height:.9;margin:14px 0}.hero p{color:var(--muted);line-height:1.6}.card{background:#0e1b2df2;border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{width:100%;padding:13px;border:1px solid var(--line);border-radius:12px;background:#081524;color:var(--text);outline:none}.field:focus{border-color:var(--green)}label{display:block;color:var(--muted);font-size:12px;margin:0 0 7px}.btn{border:0;border-radius:12px;padding:13px 16px;background:var(--green);color:#04130b;font-weight:900;cursor:pointer}.btn.secondary{background:#15263b;color:var(--text);border:1px solid var(--line)}.actions{display:flex;gap:10px;margin-top:14px}.room{font-size:28px;font-weight:900;letter-spacing:.14em}.hidden{display:none}.status{display:flex;justify-content:space-between;padding:10px;border:1px solid var(--line);border-radius:12px;margin-top:8px;background:#081524}.playerboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.player{border:1px solid var(--line);border-radius:14px;padding:13px;background:#081524}.small{font-size:12px;color:var(--muted)}.pick{font-size:18px;font-weight:800;margin-top:8px}.reveal{font-size:24px;font-weight:900;text-align:center;color:var(--gold)}@media(max-width:600px){.grid{grid-template-columns:1fr}.actions{display:grid;grid-template-columns:1fr}.hero{padding-top:28px}.card{padding:15px}}
-</style></head>
-<body><main class="wrap">
-<header class="top"><div class="logo">⚽ PREMIER DRAFT</div><div class="live">LIVE</div></header>
-<section id="home"><div class="hero"><div class="eyebrow">PLAYER DRAFT · 2–10 PLAYERS</div><h1>Pick.<br>Lock.<br>Reveal.</h1><p>選手名は自由入力。全員がLOCKするまで秘密。全員LOCKした瞬間、全員の指名を同時公開。</p></div>
-<div class="card"><div class="grid"><div><label>あなたの名前</label><input id="name" class="field" placeholder="Yugo"></div><div><label>人数</label><select id="count" class="field"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div></div><div class="grid" style="margin-top:12px"><div><label>ラウンド数</label><input id="rounds" class="field" type="number" min="1" max="30" value="5"></div><div><label>ドラフト方式</label><div class="field" style="color:var(--muted)">Snake Draft</div></div></div><div class="actions"><button class="btn" onclick="alert('次のステップでSupabaseと接続してルーム作成を実装します。')">CREATE ROOM</button></div></div>
-<div class="card"><label>友達からもらったルームコード</label><input class="field" placeholder="ABC123"><div class="actions"><button class="btn secondary" onclick="alert('次のステップでJOIN ROOMを実装します。')">JOIN ROOM</button></div></div></section>
-<section class="card hidden" id="draft"><div class="small">ROUND 1 / 5</div><h2>Your Pick</h2><input class="field" placeholder="Mohamed Salah"><div class="actions"><button class="btn">🔒 LOCK PICK</button></div><div class="status"><span>You</span><b>LOCKED</b></div><div class="status"><span>Friend</span><b>WAITING</b></div></section>
-</main></body></html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Premier Draft</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #07152b, #102f63);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: auto;
+      padding: 30px 18px 50px;
+    }
+
+    .logo {
+      text-align: center;
+      font-weight: 900;
+      font-size: 34px;
+      letter-spacing: -1px;
+      margin-top: 20px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #b8c7dd;
+      margin-top: 5px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.97);
+      color: #111;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      border: 1px solid #ccc;
+      padding: 0 14px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      border: none;
+      background: #d71920;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .secondary {
+      background: #152d52;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      color: #888;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: #ddd;
+      flex: 1;
+    }
+
+    .room-code {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      text-align: center;
+      color: #d71920;
+      margin: 15px 0;
+    }
+
+    .status {
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      background: #eef3f8;
+      color: #333;
+      margin-top: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .players {
+      margin-top: 15px;
+    }
+
+    .player {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .player:last-child {
+      border-bottom: none;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #777;
+    }
+
+    .error {
+      background: #ffe5e5;
+      color: #a00000;
+    }
+
+    .success {
+      background: #e4f8e8;
+      color: #126b2d;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">PREMIER DRAFT</div>
+  <div class="subtitle">Premier League Player Draft</div>
+
+  <!-- HOME -->
+  <div id="homeScreen">
+
+    <div class="card">
+      <h2>🎩 Create Draft</h2>
+
+      <input
+        id="hostName"
+        type="text"
+        placeholder="Your name"
+        maxlength="20"
+      >
+
+      <select id="playerCount">
+        <option value="2">2 Players</option>
+        <option value="3">3 Players</option>
+        <option value="4">4 Players</option>
+        <option value="5">5 Players</option>
+        <option value="6">6 Players</option>
+        <option value="7">7 Players</option>
+        <option value="8">8 Players</option>
+        <option value="9">9 Players</option>
+        <option value="10">10 Players</option>
+      </select>
+
+      <button onclick="createRoom()">
+        CREATE DRAFT
+      </button>
+    </div>
+
+    <div class="divider">OR</div>
+
+    <div class="card">
+      <h2>🚪 Join Draft</h2>
+
+      <input
+        id="joinName"
+        type="text"
+        placeholder="Your name"
+        maxlength="20"
+      >
+
+      <input
+        id="roomCodeInput"
+        type="text"
+        placeholder="Room code"
+        maxlength="6"
+        style="text-transform:uppercase;"
+      >
+
+      <button class="secondary" onclick="joinRoom()">
+        JOIN DRAFT
+      </button>
+    </div>
+
+    <div id="homeMessage"></div>
+
+  </div>
+
+
+  <!-- LOBBY -->
+  <div id="lobbyScreen" class="hidden">
+
+    <div class="card">
+
+      <h2>Draft Lobby</h2>
+
+      <div class="small">ROOM CODE</div>
+
+      <div id="roomCodeDisplay" class="room-code">
+        ------
+      </div>
+
+      <div id="roomStatus" class="status">
+        Waiting for players...
+      </div>
+
+      <div class="players" id="playersList"></div>
+
+      <button id="startButton" onclick="startDraft()" class="hidden">
+        START DRAFT
+      </button>
+
+      <button class="secondary" onclick="copyRoomCode()">
+        COPY ROOM CODE
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- DRAFT -->
+  <div id="draftScreen" class="hidden">
+
+    <div class="card">
+
+      <h2>Draft Room</h2>
+
+      <div id="draftInfo" class="status"></div>
+
+      <div id="draftPlayers" class="players"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MESSAGE -->
+  <div id="message"></div>
+
+</div>
+
+
+<script>
+
+  /*
+    ============================
+    SUPABASE SETTINGS
+    ============================
+  */
+
+  const SUPABASE_URL = "https://bxrxrfcntuargpnfodel.supabase.co/rest/v1/";
+  const SUPABASE_KEY = "sb_publishable_c5y87pnYPQfLNLy76WE7gw_4QQodxin";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+  /*
+    ============================
+    GLOBAL STATE
+    ============================
+  */
+
+  let currentRoom = null;
+  let currentParticipant = null;
+  let realtimeChannel = null;
+
+
+  /*
+    ============================
+    HELPERS
+    ============================
+  */
+
+  function showMessage(text, type = "") {
+
+    const box = document.getElementById("message");
+
+    box.className = "status " + type;
+    box.textContent = text;
+
+    setTimeout(() => {
+      box.textContent = "";
+      box.className = "";
+    }, 4000);
+  }
+
+
+  function showHomeMessage(text, type = "") {
+
+    const box = document.getElementById("homeMessage");
+
+    box.className = "status " + type;
+    box.textContent = text;
+  }
+
+
+  function generateRoomCode() {
+
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code = "";
+
+    for (let i = 0; i < 6; i++) {
+      code += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return code;
+  }
+
+
+  /*
+    ============================
+    CREATE ROOM
+    ============================
+  */
+
+  async function createRoom() {
+
+    const name =
+      document.getElementById("hostName").value.trim();
+
+    const playerCount =
+      Number(document.getElementById("playerCount").value);
+
+    if (!name) {
+      showHomeMessage("名前を入力してください", "error");
+      return;
+    }
+
+    const code = generateRoomCode();
+
+    const { data: room, error: roomError } =
+      await supabaseClient
+        .from("rooms")
+        .insert({
+          code: code,
+          player_count: playerCount,
+          status: "waiting",
+          current_round: 1
+        })
+        .select()
+        .single();
+
+    if (roomError) {
+
+      console.error(roomError);
+
+      showHomeMessage(
+        "ルーム作成に失敗しました",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const { data: participant, error: participantError } =
+      await supabaseClient
+        .from("participants")
+        .insert({
+          room_code: code,
+          name: name,
+          slot: 1,
+          locked: false
+        })
+        .select()
+        .single();
+
+
+    if (participantError) {
+
+      console.error(participantError);
+
+      showHomeMessage(
+        "参加者登録に失敗しました",
+        "error"
+      );
+
+      return;
+    }
+
+
+    currentRoom = room;
+    currentParticipant = participant;
+
+    openLobby();
+
+  }
+
+
+  /*
+    ============================
+    JOIN ROOM
+    ============================
+  */
+
+  async function joinRoom() {
+
+    const name =
+      document.getElementById("joinName").value.trim();
+
+    const code =
+      document.getElementById("roomCodeInput")
+        .value.trim()
+        .toUpperCase();
+
+
+    if (!name || !code) {
+
+      showHomeMessage(
+        "名前とルームコードを入力してください",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const { data: room, error: roomError } =
+      await supabaseClient
+        .from("rooms")
+        .select("*")
+        .eq("code", code)
+        .maybeSingle();
+
+
+    if (roomError || !room) {
+
+      showHomeMessage(
+        "ルームが見つかりません",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if (room.status !== "waiting") {
+
+      showHomeMessage(
+        "このドラフトはすでに開始されています",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const { data: existingPlayers } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", code);
+
+
+    const players =
+      existingPlayers || [];
+
+
+    if (players.length >= room.player_count) {
+
+      showHomeMessage(
+        "このルームは満員です",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const normalizedName =
+      name.toLowerCase().replace(/\s+/g, "");
+
+
+    const nameExists =
+      players.some(
+        p =>
+          p.name
+            .toLowerCase()
+            .replace(/\s+/g, "") === normalizedName
+      );
+
+
+    if (nameExists) {
+
+      showHomeMessage(
+        "その名前はすでに使用されています",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const slot = players.length + 1;
+
+
+    const { data: participant, error } =
+      await supabaseClient
+        .from("participants")
+        .insert({
+          room_code: code,
+          name: name,
+          slot: slot,
+          locked: false
+        })
+        .select()
+        .single();
+
+
+    if (error) {
+
+      console.error(error);
+
+      showHomeMessage(
+        "参加できませんでした",
+        "error"
+      );
+
+      return;
+    }
+
+
+    currentRoom = room;
+    currentParticipant = participant;
+
+    openLobby();
+
+  }
+
+
+  /*
+    ============================
+    OPEN LOBBY
+    ============================
+  */
+
+  async function openLobby() {
+
+    document
+      .getElementById("homeScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("lobbyScreen")
+      .classList.remove("hidden");
+
+
+    document.getElementById(
+      "roomCodeDisplay"
+    ).textContent = currentRoom.code;
+
+
+    await refreshLobby();
+
+    subscribeToRoom();
+
+  }
+
+
+  /*
+    ============================
+    REFRESH LOBBY
+    ============================
+  */
+
+  async function refreshLobby() {
+
+    if (!currentRoom) return;
+
+
+    const { data: players } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .order("slot", { ascending: true });
+
+
+    const list =
+      document.getElementById("playersList");
+
+    list.innerHTML = "";
+
+
+    (players || []).forEach(player => {
+
+      const div = document.createElement("div");
+
+      div.className = "player";
+
+      div.innerHTML = `
+        <span>
+          ${player.slot}. ${escapeHtml(player.name)}
+        </span>
+        <span>✓</span>
+      `;
+
+      list.appendChild(div);
+
+    });
+
+
+    const count =
+      players ? players.length : 0;
+
+
+    document.getElementById(
+      "roomStatus"
+    ).textContent =
+      `${count} / ${currentRoom.player_count} players joined`;
+
+
+    const startButton =
+      document.getElementById("startButton");
+
+
+    if (count >= currentRoom.player_count) {
+
+      startButton.classList.remove("hidden");
+
+    } else {
+
+      startButton.classList.add("hidden");
+
+    }
+
+  }
+
+
+  /*
+    ============================
+    START DRAFT
+    ============================
+  */
+
+  async function startDraft() {
+
+    const { data: players } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", currentRoom.code);
+
+
+    if (!players ||
+        players.length !== currentRoom.player_count) {
+
+      showMessage(
+        "まだ全員揃っていません",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const { error } =
+      await supabaseClient
+        .from("rooms")
+        .update({
+          status: "drafting",
+          current_round: 1
+        })
+        .eq("code", currentRoom.code);
+
+
+    if (error) {
+
+      console.error(error);
+
+      showMessage(
+        "ドラフトを開始できませんでした",
+        "error"
+      );
+
+      return;
+    }
+
+
+    openDraft();
+
+  }
+
+
+  /*
+    ============================
+    OPEN DRAFT
+    ============================
+  */
+
+  async function openDraft() {
+
+    document
+      .getElementById("lobbyScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("draftScreen")
+      .classList.remove("hidden");
+
+
+    document.getElementById(
+      "draftInfo"
+    ).textContent =
+      "ドラフトが開始されました！";
+
+
+    await refreshDraft();
+
+  }
+
+
+  async function refreshDraft() {
+
+    if (!currentRoom) return;
+
+
+    const { data: players } =
+      await supabaseClient
+        .from("participants")
+        .select("*")
+        .eq("room_code", currentRoom.code)
+        .order("slot", { ascending: true });
+
+
+    const list =
+      document.getElementById("draftPlayers");
+
+    list.innerHTML = "";
+
+
+    (players || []).forEach(player => {
+
+      const div = document.createElement("div");
+
+      div.className = "player";
+
+      div.innerHTML = `
+        <span>${player.slot}. ${escapeHtml(player.name)}</span>
+        <span>${player.locked ? "🔒" : "⚪"}</span>
+      `;
+
+      list.appendChild(div);
+
+    });
+
+  }
+
+
+  /*
+    ============================
+    REALTIME
+    ============================
+  */
+
+  function subscribeToRoom() {
+
+    if (!currentRoom) return;
+
+
+    realtimeChannel =
+      supabaseClient
+        .channel("room-" + currentRoom.code)
+
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "participants",
+            filter:
+              "room_code=eq." + currentRoom.code
+          },
+          async () => {
+
+            if (
+              !document
+                .getElementById("lobbyScreen")
+                .classList.contains("hidden")
+            ) {
+
+              await refreshLobby();
+
+            }
+
+            if (
+              !document
+                .getElementById("draftScreen")
+                .classList.contains("hidden")
+            ) {
+
+              await refreshDraft();
+
+            }
+
+          }
+        )
+
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "rooms",
+            filter:
+              "code=eq." + currentRoom.code
+          },
+          async payload => {
+
+            currentRoom = {
+              ...currentRoom,
+              ...payload.new
+            };
+
+
+            if (payload.new.status === "drafting") {
+
+              openDraft();
+
+            }
+
+          }
+        )
+
+        .subscribe();
+
+  }
+
+
+  /*
+    ============================
+    COPY ROOM CODE
+    ============================
+  */
+
+  async function copyRoomCode() {
+
+    if (!currentRoom) return;
+
+    try {
+
+      await navigator.clipboard.writeText(
+        currentRoom.code
+      );
+
+      showMessage(
+        "ルームコードをコピーしました！",
+        "success"
+      );
+
+    } catch {
+
+      showMessage(
+        "コピーできませんでした",
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /*
+    ============================
+    ESCAPE HTML
+    ============================
+  */
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+  }
+
+</script>
+
+</body>
+</html>
