@@ -720,7 +720,21 @@
       return;
     }
 
+if (error) {
 
+  console.error(error);
+
+  showMessage(
+    "ドラフトを開始できませんでした",
+    "error"
+  );
+
+  return;
+}
+
+await openDraft();
+
+}
     openDraft();
 
   }
