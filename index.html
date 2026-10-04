@@ -526,7 +526,60 @@ try {
        CREATE
     ========================= */
 
-    function createDraft() {
+    function createDraft(async function createDraft() {
+  const name = document.getElementById("createName").value.trim();
+  const playerCount = Number(document.getElementById("playerCount").value);
+  const roundCount = Number(document.getElementById("roundCount").value);
+
+  if (!name) {
+    alert("名前を入力してください");
+    return;
+  }
+
+  if (!supabaseClient) {
+    alert("Supabaseに接続できません");
+    return;
+  }
+
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+  const { error } = await supabaseClient
+    .from("rooms")
+    .insert({
+      code: code,
+      player_count: playerCount,
+      status: "waiting",
+      current_round: 1,
+      round_count: roundCount,
+      current_turn: 0,
+      phase: "waiting",
+      reveal_index: -1,
+      reveal_started_at: null
+    });
+
+  if (error) {
+    console.error(error);
+    alert("部屋の作成に失敗しました");
+    return;
+  }
+
+  const { error: participantError } = await supabaseClient
+    .from("participants")
+    .insert({
+      room_code: code,
+      name: name,
+      slot: 0,
+      locked: false
+    });
+
+  if (participantError) {
+    console.error(participantError);
+    alert("参加者の登録に失敗しました");
+    return;
+  }
+
+  alert("部屋を作成しました！\nルームコード：" + code);
+}) {
 
       const error =
         document.getElementById("createError");
