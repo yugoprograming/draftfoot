@@ -1,1 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PREMIER DRAFT</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0b0f19;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    .logo {
+      text-align: center;
+      margin: 30px 0 40px;
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: 3px;
+    }
+
+    .logo p {
+      color: #8d96a8;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: #151b28;
+      border: 1px solid #283246;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #39445a;
+      background: #0d1320;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: #10141d;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .secondary {
+      background: #252d3d;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .room-code {
+      font-size: 34px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 8px;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .players {
+      margin-top: 15px;
+    }
+
+    .player {
+      background: #0d1320;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .status {
+      text-align: center;
+      color: #8d96a8;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <div class="logo">
+      <h1>PREMIER DRAFT</h1>
+      <p>Premier League Player Draft</p>
+    </div>
+
+    <!-- HOME -->
+    <div id="home">
+
+      <div class="card">
+        <h2>新しいドラフトを作る</h2>
+        <input
+          id="hostName"
+          type="text"
+          placeholder="あなたの名前"
+          maxlength="20"
+        >
+        <button onclick="createRoom()">
+          ルームを作る
+        </button>
+      </div>
+
+      <div class="card">
+        <h2>ルームに参加する</h2>
+        <input
+          id="joinName"
+          type="text"
+          placeholder="あなたの名前"
+          maxlength="20"
+        >
+
+        <input
+          id="roomCodeInput"
+          type="text"
+          placeholder="ルームコード"
+          maxlength="6"
+        >
+
+        <button onclick="joinRoom()">
+          参加する
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ROOM -->
+    <div id="room" class="hidden">
+
+      <div class="card">
+
+        <h2>ドラフトルーム</h2>
+
+        <div class="room-code" id="roomCode">
+          ------
+        </div>
+
+        <p class="status">
+          このコードを友達に送ってください
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h2>参加者</h2>
+
+        <div id="playerList" class="players">
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <button onclick="startDraft()">
+          ドラフト開始
+        </button>
+
+        <button class="secondary" onclick="backHome()">
+          戻る
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    let currentRoom = null;
+
+    let players = [];
+
+    function generateRoomCode() {
+
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+      let code = "";
+
+      for (let i = 0; i < 6; i++) {
+        code += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      return code;
+    }
+
+    function createRoom() {
+
+      const name =
+        document.getElementById("hostName").value.trim();
+
+      if (!name) {
+        alert("名前を入力してください");
+        return;
+      }
+
+      currentRoom = generateRoomCode();
+
+      players = [
+        {
+          name: name,
+          host: true
+        }
+      ];
+
+      showRoom();
+
+    }
+
+    function joinRoom() {
+
+      const name =
+        document.getElementById("joinName").value.trim();
+
+      const code =
+        document.getElementById("roomCodeInput").value
+          .trim()
+          .toUpperCase();
+
+      if (!name) {
+        alert("名前を入力してください");
+        return;
+      }
+
+      if (!code) {
+        alert("ルームコードを入力してください");
+        return;
+      }
+
+      currentRoom = code;
+
+      players = [
+        {
+          name: name,
+          host: false
+        }
+      ];
+
+      showRoom();
+
+    }
+
+    function showRoom() {
+
+      document
+        .getElementById("home")
+        .classList.add("hidden");
+
+      document
+        .getElementById("room")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("roomCode")
+        .textContent = currentRoom;
+
+      renderPlayers();
+
+    }
+
+    function renderPlayers() {
+
+      const list =
+        document.getElementById("playerList");
+
+      list.innerHTML = "";
+
+      players.forEach((player, index) => {
+
+        const div = document.createElement("div");
+
+        div.className = "player";
+
+        div.textContent =
+          player.name +
+          (player.host ? " 👑" : "");
+
+        list.appendChild(div);
+
+      });
+
+    }
+
+    function startDraft() {
+
+      if (players.length < 2) {
+
+        alert(
+          "現在はテスト版です。\n友達が参加してからドラフトを開始します。"
+        );
+
+        return;
+
+      }
+
+      alert("ドラフト開始！");
+
+    }
+
+    function backHome() {
+
+      currentRoom = null;
+
+      players = [];
+
+      document
+        .getElementById("room")
+        .classList.add("hidden");
+
+      document
+        .getElementById("home")
+        .classList.remove("hidden");
+
+    }
+
+  </script>
+
+</body>
+</html>
