@@ -1,1 +1,702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>PLAYER DRAFT</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0b0b0d;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 30px 18px;
+    }
+
+    .screen.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    /* HOME */
+
+    .logo {
+      font-size: clamp(48px, 14vw, 90px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: 5px;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-bottom: 50px;
+    }
+
+    /* BUTTON */
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: white;
+      color: black;
+    }
+
+    .btn-secondary {
+      background: #222;
+      color: white;
+      border: 1px solid #444;
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    /* HEADER */
+
+    .header {
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    .small {
+      color: #777;
+      font-size: 11px;
+      letter-spacing: 3px;
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: 900;
+      margin-top: 5px;
+    }
+
+    /* CARD */
+
+    .card {
+      background: #151519;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    label {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #0d0d10;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: white;
+    }
+
+    .section-title {
+      color: #888;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin: 20px 0 10px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .option {
+      padding: 14px 5px;
+      margin: 0;
+      background: #202024;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .option.selected {
+      background: white;
+      color: black;
+    }
+
+    .message {
+      margin: 15px 0;
+      color: #7dffae;
+      text-align: center;
+    }
+
+    .error {
+      margin: 15px 0;
+      color: #ff6b6b;
+      text-align: center;
+    }
+
+    /* LOBBY */
+
+    .room-code {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-align: center;
+      margin: 25px 0 10px;
+    }
+
+    .hint {
+      color: #777;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .players {
+      margin-top: 20px;
+    }
+
+    .player {
+      background: #19191d;
+      border: 1px solid #333;
+      padding: 15px;
+      margin: 7px 0;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 500px) {
+      .options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HOME -->
+
+  <section id="home" class="screen active">
+    <div class="container center">
+
+      <div class="logo">
+        PLAYER<br>DRAFT
+      </div>
+
+      <div class="subtitle">
+        PREMIER LEAGUE PLAYER DRAFT
+      </div>
+
+      <button
+        class="btn btn-primary"
+        onclick="openCreate()"
+      >
+        ドラフト会議を開催
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        onclick="openJoin()"
+      >
+        ドラフト会議に参加
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- CREATE -->
+
+  <section id="create" class="screen">
+    <div class="container">
+
+      <div class="header">
+        <div class="small">PLAYER DRAFT</div>
+        <div class="title">CREATE DRAFT</div>
+      </div>
+
+      <div class="card">
+
+        <label>YOUR NAME</label>
+
+        <input
+          id="hostName"
+          type="text"
+          placeholder="名前を入力"
+          maxlength="20"
+        >
+
+        <div class="section-title">
+          PLAYERS
+        </div>
+
+        <div class="options">
+
+          <button class="option" onclick="selectPlayers(2,this)">2</button>
+          <button class="option" onclick="selectPlayers(3,this)">3</button>
+          <button class="option" onclick="selectPlayers(4,this)">4</button>
+          <button class="option" onclick="selectPlayers(5,this)">5</button>
+          <button class="option" onclick="selectPlayers(6,this)">6</button>
+          <button class="option" onclick="selectPlayers(7,this)">7</button>
+          <button class="option" onclick="selectPlayers(8,this)">8</button>
+          <button class="option" onclick="selectPlayers(10,this)">10</button>
+
+        </div>
+
+        <div class="section-title">
+          ROUNDS
+        </div>
+
+        <div class="options">
+
+          <button class="option" onclick="selectRounds(3,this)">3</button>
+          <button class="option" onclick="selectRounds(5,this)">5</button>
+          <button class="option" onclick="selectRounds(8,this)">8</button>
+          <button class="option" onclick="selectRounds(10,this)">10</button>
+
+        </div>
+
+        <div id="createError" class="error"></div>
+
+        <button
+          class="btn btn-primary"
+          onclick="createDraft()"
+        >
+          ドラフト会議を開催
+        </button>
+
+      </div>
+
+      <button
+        class="btn btn-secondary"
+        onclick="goHome()"
+      >
+        ← 戻る
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- JOIN -->
+
+  <section id="join" class="screen">
+    <div class="container">
+
+      <div class="header">
+        <div class="small">PLAYER DRAFT</div>
+        <div class="title">JOIN DRAFT</div>
+      </div>
+
+      <div class="card">
+
+        <label>YOUR NAME</label>
+
+        <input
+          id="joinName"
+          type="text"
+          placeholder="名前を入力"
+          maxlength="20"
+        >
+
+        <label>ROOM CODE</label>
+
+        <input
+          id="joinCode"
+          type="text"
+          placeholder="ルームコード"
+          maxlength="6"
+        >
+
+        <div id="joinError" class="error"></div>
+
+        <button
+          class="btn btn-primary"
+          onclick="joinDraft()"
+        >
+          参加する
+        </button>
+
+      </div>
+
+      <button
+        class="btn btn-secondary"
+        onclick="goHome()"
+      >
+        ← 戻る
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- LOBBY -->
+
+  <section id="lobby" class="screen">
+    <div class="container">
+
+      <div class="header">
+        <div class="small">DRAFT ROOM</div>
+        <div class="title">WAITING ROOM</div>
+      </div>
+
+      <div class="card">
+
+        <div class="small center">
+          ROOM CODE
+        </div>
+
+        <div id="roomCode" class="room-code">
+          ------
+        </div>
+
+        <div class="hint">
+          このコードを友達に送ってください
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:15px;">
+
+        <div class="small">
+          PARTICIPANTS
+        </div>
+
+        <div id="players" class="players"></div>
+
+      </div>
+
+      <div id="lobbyMessage" class="message"></div>
+
+    </div>
+  </section>
+
+
+  <script>
+
+    /*
+      ==========================================
+      PLAYER DRAFT
+      BASIC VERSION
+      ==========================================
+    */
+
+    let playerCount = 0;
+    let roundCount = 0;
+
+
+    /* =========================
+       SCREEN
+    ========================= */
+
+    function showScreen(id) {
+
+      document
+        .querySelectorAll(".screen")
+        .forEach(screen => {
+          screen.classList.remove("active");
+        });
+
+      const target =
+        document.getElementById(id);
+
+      if (target) {
+        target.classList.add("active");
+      }
+    }
+
+
+    function goHome() {
+      showScreen("home");
+    }
+
+
+    function openCreate() {
+      showScreen("create");
+    }
+
+
+    function openJoin() {
+      showScreen("join");
+    }
+
+
+    /* =========================
+       OPTIONS
+    ========================= */
+
+    function selectPlayers(count, button) {
+
+      playerCount = count;
+
+      const buttons =
+        document.querySelectorAll(
+          "#create .options:first-of-type .option"
+        );
+
+      buttons.forEach(btn => {
+        btn.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+    }
+
+
+    function selectRounds(count, button) {
+
+      roundCount = count;
+
+      const sections =
+        document.querySelectorAll(
+          "#create .options"
+        );
+
+      const buttons =
+        sections[1].querySelectorAll(".option");
+
+      buttons.forEach(btn => {
+        btn.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+    }
+
+
+    /* =========================
+       CREATE
+    ========================= */
+
+    function createDraft() {
+
+      const error =
+        document.getElementById("createError");
+
+      error.textContent = "";
+
+
+      const name =
+        document
+          .getElementById("hostName")
+          .value
+          .trim();
+
+
+      if (!name) {
+
+        error.textContent =
+          "名前を入力してください。";
+
+        return;
+      }
+
+
+      if (!playerCount) {
+
+        error.textContent =
+          "参加人数を選んでください。";
+
+        return;
+      }
+
+
+      if (!roundCount) {
+
+        error.textContent =
+          "ラウンド数を選んでください。";
+
+        return;
+      }
+
+
+      /*
+        今はSupabaseを使わず、
+        正常に画面遷移することを確認する。
+      */
+
+      const code =
+        createRoomCode();
+
+
+      document
+        .getElementById("roomCode")
+        .textContent = code;
+
+
+      document
+        .getElementById("players")
+        .innerHTML = `
+          <div class="player">
+            ${escapeHtml(name)}
+          </div>
+        `;
+
+
+      document
+        .getElementById("lobbyMessage")
+        .textContent =
+          `準備完了！ ${playerCount}人・${roundCount}ラウンド`;
+
+
+      showScreen("lobby");
+    }
+
+
+    /* =========================
+       JOIN
+    ========================= */
+
+    function joinDraft() {
+
+      const error =
+        document.getElementById("joinError");
+
+      const name =
+        document
+          .getElementById("joinName")
+          .value
+          .trim();
+
+      const code =
+        document
+          .getElementById("joinCode")
+          .value
+          .trim()
+          .toUpperCase();
+
+
+      error.textContent = "";
+
+
+      if (!name) {
+
+        error.textContent =
+          "名前を入力してください。";
+
+        return;
+      }
+
+
+      if (!code) {
+
+        error.textContent =
+          "ルームコードを入力してください。";
+
+        return;
+      }
+
+
+      document
+        .getElementById("roomCode")
+        .textContent = code;
+
+
+      document
+        .getElementById("players")
+        .innerHTML = `
+          <div class="player">
+            ${escapeHtml(name)}
+          </div>
+        `;
+
+
+      document
+        .getElementById("lobbyMessage")
+        .textContent =
+          "参加しました。";
+
+
+      showScreen("lobby");
+    }
+
+
+    /* =========================
+       ROOM CODE
+    ========================= */
+
+    function createRoomCode() {
+
+      const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+      let code = "";
+
+      for (let i = 0; i < 6; i++) {
+
+        code +=
+          chars[
+            Math.floor(
+              Math.random() * chars.length
+            )
+          ];
+      }
+
+      return code;
+    }
+
+
+    /* =========================
+       ESCAPE
+    ========================= */
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+  </script>
+
+</body>
+</html>
