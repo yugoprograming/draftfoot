@@ -421,7 +421,19 @@
 
 
   <script>
+const SUPABASE_URL = "https://bxrxrfcntuargpnfodel.supabase.co";
+const SUPABASE_KEY = "sb_publishable_c5y87pnYPQfLNLy76WE7gw_4QQodxin";
 
+let supabaseClient = null;
+
+try {
+  supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+} catch (error) {
+  console.error("Supabase initialization error:", error);
+}
     /*
       ==========================================
       PLAYER DRAFT
